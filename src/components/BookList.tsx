@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Table,
@@ -13,7 +13,7 @@ import {
 import { addBook, editBook, deleteBook } from "../actions";
 import ModalAdd from "./ModalAdd";
 import ModalEdit from "./ModalEdit";
-import swal from 'sweetalert';
+import swal from "sweetalert";
 
 interface UserProfile {
   id: number;
@@ -28,39 +28,27 @@ const BookList = () => {
   const books = useSelector((state: any) => state);
   const dispatch = useDispatch();
 
-  const [modalAdd, setModalAdd] = useState<boolean>(false);
-  const [modalEdit, setModalEdit] = useState<boolean>(false);
+  const [modalAdd, setModalAdd] = useState(false);
+  const [modalEdit, setModalEdit] = useState(false);
   const [currentBook, setCurrentBook] = useState<UserProfile | null>(null);
-  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState("all");
 
   const handleStatus = (id: number) => {
     const book = books.find((book: UserProfile) => book.id === id);
     if (book) {
-      const updatedBook = { ...book, status: !book.status };
-      dispatch(editBook(updatedBook));
+      dispatch(editBook({ ...book, status: !book.status }));
     }
   };
 
-  const handleAdd = () => {
-    setModalAdd(true);
-  };
-
-  const closeModalAdd = () => {
-    setModalAdd(false);
-  };
-
+  const handleAdd = () => setModalAdd(true);
+  const closeModalAdd = () => setModalAdd(false);
   const handleEdit = (book: UserProfile) => {
     setCurrentBook(book);
     setModalEdit(true);
   };
-
   const closeModalEdit = () => {
     setModalEdit(false);
     setCurrentBook(null);
-  };
-
-  const updateBook = (updatedBook: UserProfile) => {
-    dispatch(editBook(updatedBook));
   };
 
   const handleDelete = (id: number) => {
@@ -72,15 +60,9 @@ const BookList = () => {
     }).then((willDelete) => {
       if (willDelete) {
         dispatch(deleteBook(id));
-        swal("Deleted successfully", {
-          icon: "success",
-        });
+        swal("Deleted successfully", { icon: "success" });
       }
     });
-  };
-
-  const addBook = (newBook: UserProfile) => {
-    dispatch(addBook(newBook));
   };
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -89,9 +71,7 @@ const BookList = () => {
 
   const filteredBooks = books.filter((book: UserProfile) => {
     if (filterStatus === "all") return true;
-    if (filterStatus === "Đã trả") return book.status;
-    if (filterStatus === "Chưa trả") return !book.status;
-    return true;
+    return filterStatus === "Đã trả" ? book.status : !book.status;
   });
 
   return (
@@ -144,12 +124,12 @@ const BookList = () => {
           ))}
         </TableBody>
       </Table>
-      {modalAdd && <ModalAdd closeModalAdd={closeModalAdd} addBook={addBook} />}
+      {modalAdd && <ModalAdd closeModalAdd={closeModalAdd} addBook={(newBook: UserProfile) => dispatch(addBook(newBook))} />}
       {modalEdit && currentBook && (
         <ModalEdit
           book={currentBook}
           closeModalEdit={closeModalEdit}
-          updateBook={updateBook}
+          updateBook={(updatedBook: UserProfile) => dispatch(editBook(updatedBook))}
         />
       )}
     </TableContainer>

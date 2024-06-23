@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { editBook } from '../actions';
 import "./ModalEdit.css";
+
 interface UserProfile {
   id: number;
   userBook: string;
@@ -10,25 +11,25 @@ interface UserProfile {
   payDay: string;
   status: boolean;
 }
+
 interface ModalEditProps {
   book: UserProfile;
   closeModalEdit: () => void;
-  updateBook: (updatedBook: UserProfile) => void;
 }
 
-export default function ModalEdit({ book, closeModalEdit, updateBook }: ModalEditProps) {
-  const [nameBook, setNameBook] = useState<string>(book.userBook);
-  const [nameStudent, setNameStudent] = useState<string>(book.userName);
-  const [borrowedDay, setBorrowedDay] = useState<string>(book.borrowedDay);
-  const [payDay, setPayDay] = useState<string>(book.payDay);
+const ModalEdit: React.FC<ModalEditProps> = ({ book, closeModalEdit }) => {
+  const [userBook, setUserBook] = useState(book.userBook);
+  const [userName, setUserName] = useState(book.userName);
+  const [borrowedDay, setBorrowedDay] = useState(book.borrowedDay);
+  const [payDay, setPayDay] = useState(book.payDay);
 
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
     const updatedBook = {
       ...book,
-      nameBook,
-      nameStudent,
+      userBook,
+      userName,
       borrowedDay,
       payDay,
     };
@@ -38,39 +39,39 @@ export default function ModalEdit({ book, closeModalEdit, updateBook }: ModalEdi
 
   return (
     <>
-      <div className='modalEdit'>
+      <div className="modalEdit">
         <div className="headerModalEdit">
           <h4>Sửa thông tin mượn sách</h4>
           <button onClick={closeModalEdit}>X</button>
         </div>
         <div className="mainModalEdit">
-          <label htmlFor="nameBook">Tên sách:</label>
-          <input 
-            type="text" 
-            id="nameBook" 
-            value={nameBook} 
-            onChange={(e) => setNameBook(e.target.value)} 
+          <label htmlFor="userBook">Tên sách:</label>
+          <input
+            type="text"
+            id="userBook"
+            value={userBook}
+            onChange={(e) => setUserBook(e.target.value)}
           />
-          <label htmlFor="nameStudent">Tên người mượn:</label>
-          <input 
-            type="text" 
-            id="nameStudent" 
-            value={nameStudent} 
-            onChange={(e) => setNameStudent(e.target.value)} 
+          <label htmlFor="userName">Tên người mượn:</label>
+          <input
+            type="text"
+            id="userName"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
           />
           <label htmlFor="borrowedDay">Ngày mượn:</label>
-          <input 
-            type="date" 
-            id="borrowedDay" 
-            value={borrowedDay} 
-            onChange={(e) => setBorrowedDay(e.target.value)} 
+          <input
+            type="date"
+            id="borrowedDay"
+            value={borrowedDay}
+            onChange={(e) => setBorrowedDay(e.target.value)}
           />
           <label htmlFor="payDay">Ngày trả:</label>
-          <input 
-            type="date" 
-            id="payDay" 
-            value={payDay} 
-            onChange={(e) => setPayDay(e.target.value)} 
+          <input
+            type="date"
+            id="payDay"
+            value={payDay}
+            onChange={(e) => setPayDay(e.target.value)}
           />
         </div>
         <div className="footerModalEdit">
@@ -80,4 +81,6 @@ export default function ModalEdit({ book, closeModalEdit, updateBook }: ModalEdi
       <div className="overlay" onClick={closeModalEdit}></div>
     </>
   );
-}
+};
+
+export default ModalEdit;
